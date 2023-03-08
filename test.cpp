@@ -93,3 +93,102 @@ void test3()
         }
     }
 }
+
+
+//加载图片并且在显示之前平滑处理图片
+void test4()
+{
+    cv::namedWindow("Example4_in",cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Example4_out",cv::WINDOW_AUTOSIZE);
+    cv::Mat img = cv::imread("/Users/qiuhaoxuan/CLionProjects/opencv1/IMG_0988.jpeg");
+    cv::imshow("Example4_in",img);
+    cv::Mat out;
+    cv::GaussianBlur(img,out,cv::Size(5,5),3,3);
+    cv::GaussianBlur(out,out,cv::Size(5,5),3,3);
+    cv::imshow("Example4_out",out);
+    cv::waitKey(0);
+}
+
+
+//使用cv::pyrDown()创建一个新的图像， 宽高为原始图像的一半
+void test5()
+{
+    cv::Mat img1,img2;
+    cv::namedWindow("Example1",cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Example2",cv::WINDOW_AUTOSIZE);
+    cv::Mat img;
+    img1=cv::imread("/Users/qiuhaoxuan/CLionProjects/opencv1/IMG_0988.jpeg");
+    cv::imshow("Example1",img1);
+    cv::pyrDown(img1,img2);  //创建一个新的图像img2， 宽高为原始图像img1的一半
+    cv::imshow("Example2",img2);
+    cv::waitKey(0);
+}
+
+//Canny边缘检测器输出一个单通道的灰度图像
+void test6()
+{
+    cv::Mat img_rgb, img_gry, img_canny;
+    cv::namedWindow("Example_gry",cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Example_canny",cv::WINDOW_AUTOSIZE);
+    img_rgb = cv::imread("/Users/qiuhaoxuan/CLionProjects/opencv1/IMG_0988.jpeg");
+    cv::cvtColor(img_rgb,img_gry,cv::COLOR_BGR2GRAY);
+
+    cv::Canny(img_gry,img_canny,30,100,3, true);
+    cv::imshow("Example_gry",img_gry);
+    cv::imshow("Example_canny",img_canny);
+    cv::waitKey(0);
+}
+
+//在一个简单图像处理流程中结合图像金字塔操作和Canny边缘检测器，结合test5和test6
+void test7()
+{
+    cv::Mat img_rgb, img_gry, img_canny, img_pyr, img_pyr2;
+    cv::namedWindow("Example_gry",cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("img_pyr",cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("img_pyr2",cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Example_canny",cv::WINDOW_AUTOSIZE);
+    img_rgb = cv::imread("/Users/qiuhaoxuan/CLionProjects/opencv1/IMG_0988.jpeg");
+    cv::cvtColor(img_rgb,img_gry,cv::COLOR_BGR2GRAY);
+
+    cv::pyrDown(img_gry, img_pyr);
+    cv::pyrDown(img_pyr, img_pyr2);
+    cv::Canny(img_pyr2,img_canny,10,100,3, true);
+    cv::imshow("Example_gry",img_gry);
+    cv::imshow("img_pyr",img_pyr);
+    cv::imshow("img_pyr2",img_pyr2);
+    cv::imshow("Example_canny",img_canny);
+    cv::waitKey(0);
+}
+
+//读写test7中的像素值
+void test8()
+{
+    cv::Mat img_rgb, img_gry, img_canny, img_pyr, img_pyr2;
+    img_rgb = cv::imread("/Users/qiuhaoxuan/CLionProjects/opencv1/IMG_0988.jpeg");
+    int x=16,y=32;
+    cv::Vec3b intensisty = img_rgb.at< cv::Vec3b >(y,x);
+    uchar blue = intensisty[0];
+    uchar green = intensisty[1];
+    uchar red = intensisty[2];
+    cout<<(unsigned int)blue<<endl;
+    cout<<(unsigned int)green<<endl;
+    cout<<(unsigned int)red<<endl;
+}
+
+//连接摄像头
+void test9()
+{
+    cv::namedWindow("Example9",cv::WINDOW_AUTOSIZE);
+    cv::VideoCapture cap;
+    cap.open(0);
+    cv:: Mat frame;
+    while(1)
+    {
+        cap>>frame;
+        cv::imshow("Example9",frame);
+        char c = (char)cv::waitKey(30);
+        if(c==27)
+        { break;}
+    }
+}
+
